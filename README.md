@@ -1,2 +1,2 @@
 # words-api
-OpenAPI artefacts for Words application
+OpenAPI definition for Words application
