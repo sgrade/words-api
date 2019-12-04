@@ -5,10 +5,10 @@ info:
   title: Words
   termsOfService: 'http://www.romank.net/content/about'
   contact:
-    email: example@example.com
+    email: sgrade@users.noreply.github.com
   license:
     name: MIT license
-    url: 'https://github.com/sgrade/words-backend/blob/master/LICENSE'
+    url: 'https://github.com/sgrade/words-api/blob/master/LICENSE'
 servers:
 # Added by API Auto Mocking Plugin
   - description: SwaggerHub API Auto Mocking
