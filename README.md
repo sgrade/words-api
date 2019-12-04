@@ -1,5 +1,5 @@
-# words-api
-OpenAPI definition for Words application
+# About
+OpenAPI definition for Words application. Developed on SwaggerHub
 
 # Use
 ## Prerequisites
