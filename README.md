@@ -1,7 +1,8 @@
 # words-api
 OpenAPI definition for Words application
 
-# Usage
+# Use
+## Prerequisites
 Install OpenJDK
 
 Install Maven
@@ -18,7 +19,9 @@ For OpenAPI v3 checkout to the [current stable version](https://github.com/swagg
 git checkout tags/v3.0.14
 
 mvn clean package
+```
 
+## Generate code
 java -jar modules/swagger-codegen-cli/target/swagger-codegen-cli.jar generate -i ../swagger.json -l python-flask -o ../out/words-api-python-flask
 ```
 
