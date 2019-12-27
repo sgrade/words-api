@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  description: Words backend API
+  description: Words API
   version: "1.0.0"
   title: Words
   termsOfService: 'http://www.romank.net/content/about'
@@ -11,6 +11,8 @@ info:
     url: 'https://github.com/sgrade/words-api/blob/master/LICENSE'
 servers:
 # Added by API Auto Mocking Plugin
+  - description: basePath
+    url: /
   - description: SwaggerHub API Auto Mocking
     url: https://virtserver.swaggerhub.com/sgrade/words/1.0.0
 tags:
@@ -53,10 +55,10 @@ paths:
           description: Word not found
         '405':
           description: Validation exception
-      security:
-        - wordstore_auth:
-            - 'write:words'
-            - 'read:words'
+      #security:
+        #- wordstore_auth:
+            #- 'write:words'
+            #- 'read:words'
       requestBody:
         $ref: '#/components/requestBodies/Word'
   '/word/{wordId}':
@@ -88,8 +90,8 @@ paths:
           description: Invalid ID supplied
         '404':
           description: Word not found
-      security:
-        - api_key: []
+      #security:
+        #- api_key: []
     post:
       tags:
         - word
@@ -106,10 +108,10 @@ paths:
       responses:
         '405':
           description: Invalid input
-      security:
-        - wordstore_auth:
-            - 'write:words'
-            - 'read:words'
+      #security:
+        #- wordstore_auth:
+            #- 'write:words'
+            #- 'read:words'
       requestBody:
         content:
           application/x-www-form-urlencoded:
@@ -145,10 +147,10 @@ paths:
           description: Invalid ID supplied
         '404':
           description: Word not found
-      security:
-        - wordstore_auth:
-            - 'write:words'
-            - 'read:words'
+      #security:
+        #- wordstore_auth:
+            #- 'write:words'
+            #- 'read:words'
   '/word/{wordId}/uploadImage':
     post:
       tags:
@@ -170,10 +172,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiResponse'
-      security:
-        - wordstore_auth:
-            - 'write:words'
-            - 'read:words'
+      #security:
+        #- wordstore_auth:
+            #- 'write:words'
+            #- 'read:words'
       requestBody:
         content:
           application/octet-stream:
@@ -232,8 +234,9 @@ paths:
           description: Invalid number of words supplied
         '404':
           description: Words not found
-      security:
-        - api_key: []
+      #security:
+        #- BasicAuth: []
+        # - api_key: []
   /words/findByStatus:
     get:
       tags:
@@ -272,10 +275,10 @@ paths:
                   $ref: '#/components/schemas/Words'
         '400':
           description: Invalid status value
-      security:
-        - wordstore_auth:
-            - 'write:words'
-            - 'read:words'
+      #security:
+        #- wordstore_auth:
+            #- 'write:words'
+            #- 'read:words'
   /words/findByName:
     get:
       tags:
@@ -307,10 +310,10 @@ paths:
                   $ref: '#/components/schemas/Words'
         '400':
           description: Invalid status value
-      security:
-        - wordstore_auth:
-            - 'write:words'
-            - 'read:words'
+      #security:
+        #- wordstore_auth:
+            #- 'write:words'
+            #- 'read:words'
   /store/inventory:
     get:
       tags:
@@ -328,8 +331,8 @@ paths:
                 additionalProperties:
                   type: integer
                   format: int32
-      security:
-        - api_key: []
+      #security:
+        #- api_key: []
   /store/order:
     post:
       tags:
@@ -673,7 +676,7 @@ components:
     Words:
       type: array
       items:
-        $ref: '#/components/schemas/Words'
+        $ref: '#/components/schemas/Word'
       xml:
         name: Words
     ApiResponse:
@@ -707,6 +710,9 @@ components:
       description: List of user object
       required: true
   securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
     wordstore_auth:
       type: oauth2
       flows:
