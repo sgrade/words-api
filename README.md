@@ -1,7 +1,7 @@
 # About
 OpenAPI definition for Words application. Developed on SwaggerHub
 
-# Use
+# Generate client code from the definition
 ## Prerequisites
 Install OpenJDK
 
