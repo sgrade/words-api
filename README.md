@@ -7,9 +7,12 @@ Install OpenJDK
 
 Install Maven
 
+Clone Codegen repo
+
 ```
 git clone https://github.com/swagger-api/swagger-codegen
-
+```
+```
 cd swagger-codegen
 ```
 
