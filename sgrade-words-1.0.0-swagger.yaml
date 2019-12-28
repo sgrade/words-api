@@ -1,4 +1,4 @@
-openapi: 3.0.0
+openapi: 3.0.1
 info:
   description: Words API
   version: "1.0.0"
@@ -33,6 +33,7 @@ paths:
       tags:
         - word
       summary: Add a new word to the store
+      x-openapi-router-controller: words_backend.controllers.word_controller
       operationId: addWord
       responses:
         '405':
@@ -47,6 +48,7 @@ paths:
       tags:
         - word
       summary: Update an existing word
+      x-openapi-router-controller: words_backend.controllers.word_controller
       operationId: updateWord
       responses:
         '400':
@@ -67,6 +69,7 @@ paths:
         - word
       summary: Find word by ID
       description: Returns a single word
+      x-openapi-router-controller: words_backend.controllers.word_controller
       operationId: getWordById
       parameters:
         - name: wordId
@@ -96,6 +99,7 @@ paths:
       tags:
         - word
       summary: Updates a word in the store with form data
+      x-openapi-router-controller: words_backend.controllers.word_controller
       operationId: updateWordWithForm
       parameters:
         - name: wordId
@@ -128,6 +132,7 @@ paths:
       tags:
         - word
       summary: Deletes a word
+      x-openapi-router-controller: words_backend.controllers.word_controller
       operationId: deleteWord
       parameters:
         - name: api_key
@@ -156,6 +161,7 @@ paths:
       tags:
         - word
       summary: uploads an image
+      x-openapi-router-controller: words_backend.controllers.word_controller
       operationId: uploadFile
       parameters:
         - name: wordId
@@ -188,6 +194,7 @@ paths:
         - words
       summary: Get words to learn
       description: Returns number of words to learn
+      x-openapi-router-controller: words_backend.controllers.words_controller
       operationId: getWordsToLearn
       parameters:
         - name: limit
@@ -243,6 +250,7 @@ paths:
         - words
       summary: Finds Words by status
       description: Multiple status values can be provided with comma separated strings
+      x-openapi-router-controller: words_backend.controllers.words_controller
       operationId: findWordsByStatus
       parameters:
         - name: status
@@ -285,6 +293,7 @@ paths:
         - words
       summary: Find Words by name
       description: Returns all words, which have the term in their name
+      x-openapi-router-controller: words_backend.controllers.words_controller
       operationId: findWordsByName
       parameters:
         - name: term
@@ -320,6 +329,7 @@ paths:
         - store
       summary: Returns word inventories by status
       description: Returns a map of status codes to quantities
+      x-openapi-router-controller: words_backend.controllers.store_controller
       operationId: getInventory
       responses:
         '200':
@@ -338,6 +348,7 @@ paths:
       tags:
         - store
       summary: Place an order for a word
+      x-openapi-router-controller: words_backend.controllers.store_controller
       operationId: placeOrder
       responses:
         '200':
@@ -366,6 +377,7 @@ paths:
       description: >-
         For valid response try integer IDs with value >= 1 and <= 10.\ \ Other
         values will generated exceptions
+      x-openapi-router-controller: words_backend.controllers.store_controller
       operationId: getOrderById
       parameters:
         - name: orderId
@@ -398,6 +410,7 @@ paths:
       description: >-
         For valid response try integer IDs with positive integer value.\ \
         Negative or non-integer values will generate API errors
+      x-openapi-router-controller: words_backend.controllers.store_controller
       operationId: deleteOrder
       parameters:
         - name: orderId
@@ -419,6 +432,7 @@ paths:
         - user
       summary: Create user
       description: This can only be done by the logged in user.
+      x-openapi-router-controller: words_backend.controllers.user_controller
       operationId: createUser
       responses:
         default:
@@ -435,6 +449,7 @@ paths:
       tags:
         - user
       summary: Creates list of users with given input array
+      x-openapi-router-controller: words_backend.controllers.user_controller
       operationId: createUsersWithArrayInput
       responses:
         default:
@@ -446,6 +461,7 @@ paths:
       tags:
         - user
       summary: Creates list of users with given input array
+      x-openapi-router-controller: words_backend.controllers.user_controller
       operationId: createUsersWithListInput
       responses:
         default:
@@ -457,6 +473,7 @@ paths:
       tags:
         - user
       summary: Logs user into the system
+      x-openapi-router-controller: words_backend.controllers.user_controller
       operationId: loginUser
       parameters:
         - name: username
@@ -499,6 +516,7 @@ paths:
       tags:
         - user
       summary: Logs out current logged in user session
+      x-openapi-router-controller: words_backend.controllers.user_controller
       operationId: logoutUser
       responses:
         default:
@@ -508,6 +526,7 @@ paths:
       tags:
         - user
       summary: Get user by user name
+      x-openapi-router-controller: words_backend.controllers.user_controller
       operationId: getUserByName
       parameters:
         - name: username
@@ -535,6 +554,7 @@ paths:
         - user
       summary: Updated user
       description: This can only be done by the logged in user.
+      x-openapi-router-controller: words_backend.controllers.user_controller
       operationId: updateUser
       parameters:
         - name: username
@@ -560,6 +580,7 @@ paths:
         - user
       summary: Delete user
       description: This can only be done by the logged in user.
+      x-openapi-router-controller: words_backend.controllers.user_controller
       operationId: deleteUser
       parameters:
         - name: username
@@ -579,6 +600,7 @@ paths:
         - user
       summary: Update word status for the user
       description: This can only be done by the logged in user.
+      x-openapi-router-controller: words_backend.controllers.user_controller
       operationId: markWordLearned
       parameters:
         - name: username
