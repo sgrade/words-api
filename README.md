@@ -25,4 +25,4 @@ mvn clean package
 java -jar modules/swagger-codegen-cli/target/swagger-codegen-cli.jar generate -i ../swagger.json -l python-flask -o ../out/words-api-python-flask
 ```
 
-More - [https://github.com/swagger-api/swagger-codegen](https://github.com/swagger-api/swagger-codegen)
+More in [Codegen docs](https://github.com/swagger-api/swagger-codegen)
