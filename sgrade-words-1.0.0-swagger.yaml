@@ -131,7 +131,7 @@ paths:
     delete:
       tags:
         - word
-      summary: Deletes a word
+      summary: Delete word
       x-openapi-router-controller: words_backend.controllers.word_controller
       operationId: deleteWord
       parameters:
@@ -188,62 +188,6 @@ paths:
             schema:
               type: string
               format: binary
-  /words:
-    get:
-      tags:
-        - words
-      summary: Get words to learn
-      description: Returns number of words to learn
-      x-openapi-router-controller: words_backend.controllers.words_controller
-      operationId: getWordsToLearn
-      parameters:
-        - name: limit
-          in: query
-          description: number of words to return
-          schema:
-            type: integer
-            minimum: 3
-            default: 3
-          required: false
-        - name: status
-          in: query
-          description: status of words to return
-          schema:
-            type: array
-            items: 
-              type: string
-              enum:
-                - notStarted
-                - inProgress
-                - learned
-          required: false
-          # Serialize as status=notStarted,inProgress,learned
-          style: form
-          explode: false
-          examples:
-            oneStatus:
-              summary: Example of a single status
-              value: [inProgress]
-            multipleStatuses:
-              summary: Example of multiple statuses
-              value: [notStarted, inProgress, learned]  # ?status=notStarted,inProgress,learned
-      responses:
-        '200':
-          description: successful operation
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Words'
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/Words'
-        '400':
-          description: Invalid number of words supplied
-        '404':
-          description: Words not found
-      #security:
-        #- BasicAuth: []
-        # - api_key: []
   /words/findByStatus:
     get:
       tags:
@@ -552,7 +496,7 @@ paths:
     put:
       tags:
         - user
-      summary: Updated user
+      summary: Update user
       description: This can only be done by the logged in user.
       x-openapi-router-controller: words_backend.controllers.user_controller
       operationId: updateUser
@@ -594,6 +538,69 @@ paths:
           description: Invalid username supplied
         '404':
           description: User not found
+  '/user/{username}/words_to_learn':
+    get:
+      tags:
+        - user
+      summary: Get words to learn
+      description: Returns number of words to learn
+      x-openapi-router-controller: words_backend.controllers.words_controller
+      operationId: getWordsToLearn
+      parameters:
+        - name: username
+          in: path
+          description: name that need to be updated
+          required: true
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: number of words to return
+          schema:
+            type: integer
+            minimum: 3
+            default: 3
+          required: false
+        - name: status
+          in: query
+          description: status of words to return
+          schema:
+            type: array
+            items: 
+              type: string
+              enum:
+                - notStarted
+                - inProgress
+                - learned
+          required: false
+          # Serialize as status=notStarted,inProgress,learned
+          style: form
+          explode: false
+          examples:
+            oneStatus:
+              summary: Example of a single status
+              value: [inProgress]
+            multipleStatuses:
+              summary: Example of multiple statuses
+              # ?status=notStarted,inProgress
+              value: [notStarted, inProgress, learned]
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Words'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Words'
+        '400':
+          description: Invalid number of words supplied
+        '404':
+          description: Words not found
+      #security:
+        #- BasicAuth: []
+        # - api_key: []
   '/user/{username}/{wordId}':
     put:
       tags:
