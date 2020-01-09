@@ -1,0 +1,736 @@
+openapi: 3.0.1
+info:
+  description: Words API
+  version: "1.0.1"
+  title: Words
+  termsOfService: 'http://www.romank.net/content/about'
+  contact:
+    email: sgrade@users.noreply.github.com
+  license:
+    name: MIT license
+    url: 'https://github.com/sgrade/words-api/blob/master/LICENSE'
+servers:
+# Added by API Auto Mocking Plugin
+  - description: basePath
+    url: /
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/sgrade/words/1.0.0
+tags:
+  - name: word
+    description: Create, read, update, delete words in the database
+  - name: words
+    description: Learn words
+  - name: store
+    description: Store
+  - name: user
+    description: Create, read, update, delete users
+paths:
+  /word:
+    post:
+      tags:
+        - word
+      summary: Create a new word in the database
+      x-openapi-router-controller: words_backend.controllers.word_controller
+      operationId: createWord
+      responses:
+        '405':
+          description: Invalid input
+      security:
+        - wordstore_auth:
+            - 'write:words'
+            - 'read:words'
+      requestBody:
+        $ref: '#/components/requestBodies/Word'
+    put:
+      tags:
+        - word
+      summary: Update an existing word
+      x-openapi-router-controller: words_backend.controllers.word_controller
+      operationId: updateWord
+      responses:
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Word not found
+        '405':
+          description: Validation exception
+      #security:
+        #- wordstore_auth:
+            #- 'write:words'
+            #- 'read:words'
+      requestBody:
+        $ref: '#/components/requestBodies/Word'
+  '/word/{wordId}':
+    get:
+      tags:
+        - word
+      summary: Find word by ID
+      description: Returns a single word
+      x-openapi-router-controller: words_backend.controllers.word_controller
+      operationId: getWordById
+      parameters:
+        - name: wordId
+          in: path
+          description: ID of word to return
+          required: true
+          schema:
+            type: string
+            example: AjW1TOyy9NMDhKFFdLtT
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Word'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Word'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Word not found
+      #security:
+        #- api_key: []
+    post:
+      tags:
+        - word
+      summary: Updates a word in the store with form data
+      x-openapi-router-controller: words_backend.controllers.word_controller
+      operationId: updateWordWithForm
+      parameters:
+        - name: wordId
+          in: path
+          description: ID of word that needs to be updated
+          required: true
+          schema:
+            type: string
+            format: AjW1TOyy9NMDhKFFdLtT
+      responses:
+        '405':
+          description: Invalid input
+      #security:
+        #- wordstore_auth:
+            #- 'write:words'
+            #- 'read:words'
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                name:
+                  description: Updated name of the word
+                  type: string
+                status:
+                  description: Updated status of the word
+                  type: string
+    delete:
+      tags:
+        - word
+      summary: Delete word
+      x-openapi-router-controller: words_backend.controllers.word_controller
+      operationId: deleteWord
+      parameters:
+        - name: api_key
+          in: header
+          required: false
+          schema:
+            type: string
+        - name: wordId
+          in: path
+          description: Word id to delete
+          required: true
+          schema:
+            type: string
+            format: AjW1TOyy9NMDhKFFdLtT
+      responses:
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Word not found
+      #security:
+        #- wordstore_auth:
+            #- 'write:words'
+            #- 'read:words'
+  '/word/{wordId}/uploadImage':
+    post:
+      tags:
+        - word
+      summary: uploads an image
+      x-openapi-router-controller: words_backend.controllers.word_controller
+      operationId: uploadFile
+      parameters:
+        - name: wordId
+          in: path
+          description: ID of word to update
+          required: true
+          schema:
+            type: string
+            format: AjW1TOyy9NMDhKFFdLtT
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+      #security:
+        #- wordstore_auth:
+            #- 'write:words'
+            #- 'read:words'
+      requestBody:
+        content:
+          application/octet-stream:
+            schema:
+              type: string
+              format: binary
+  /words:
+    get:
+      tags:
+        - words
+      summary: Get words to learn
+      description: Returns number of words to learn
+      x-openapi-router-controller: words_backend.controllers.words_controller
+      operationId: getWords
+      parameters:
+        - name: limit
+          in: query
+          description: number of words to return
+          schema:
+            type: integer
+            minimum: 3
+            default: 3
+          required: false
+        - name: status
+          in: query
+          description: status of words to return
+          schema:
+            type: array
+            items: 
+              type: string
+              enum:
+                - notStarted
+                - inProgress
+                - learned
+          required: false
+          # Serialize as status=notStarted,inProgress,learned
+          style: form
+          explode: false
+          examples:
+            oneStatus:
+              summary: Example of a single status
+              value: [inProgress]
+            multipleStatuses:
+              summary: Example of multiple statuses
+              # ?status=notStarted,inProgress
+              value: [notStarted, inProgress, learned]
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Words'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Words'
+        '400':
+          description: Invalid number of words supplied
+        '404':
+          description: Words not found
+      #security:
+        #- BasicAuth: []
+        # - api_key: []
+  /words/findByStatus:
+    get:
+      tags:
+        - words
+      summary: Finds Words by status
+      description: Multiple status values can be provided with comma separated strings
+      x-openapi-router-controller: words_backend.controllers.words_controller
+      operationId: findWordsByStatus
+      parameters:
+        - name: status
+          in: query
+          description: Status values that need to be considered for filter
+          required: true
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - notStarted
+                - inProgress
+                - learned
+              default: notStarted
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Words'
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Words'
+        '400':
+          description: Invalid status value
+      #security:
+        #- wordstore_auth:
+            #- 'write:words'
+            #- 'read:words'
+  /words/findByName:
+    get:
+      tags:
+        - words
+      summary: Find Words by name
+      description: Returns all words, which have the term in their name
+      x-openapi-router-controller: words_backend.controllers.words_controller
+      operationId: findWordsByName
+      parameters:
+        - name: term
+          in: path
+          description: Term to search in the names
+          required: true
+          explode: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Words'
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Words'
+        '400':
+          description: Invalid status value
+      #security:
+        #- wordstore_auth:
+            #- 'write:words'
+            #- 'read:words'
+  /learned:
+    put:
+      tags:
+        - words
+      summary: Update word status for the user
+      description: This can only be done by the logged in user.
+      x-openapi-router-controller: words_backend.controllers.words_controller
+      operationId: markWordLearned
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Word'
+        description: Word object
+        required: true
+      responses:
+        '400':
+          description: Invalid word supplied
+        '404':
+          description: Word not found
+  /store/inventory:
+    get:
+      tags:
+        - store
+      summary: Returns word inventories by status
+      description: Returns a map of status codes to quantities
+      x-openapi-router-controller: words_backend.controllers.store_controller
+      operationId: getInventory
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: integer
+                  format: int32
+      #security:
+        #- api_key: []
+  /store/order:
+    post:
+      tags:
+        - store
+      summary: Place an order for a word
+      x-openapi-router-controller: words_backend.controllers.store_controller
+      operationId: placeOrder
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '400':
+          description: Invalid Order
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Order'
+        description: order placed for purchasing the word
+        required: true
+  '/store/order/{orderId}':
+    get:
+      tags:
+        - store
+      summary: Find purchase order by ID
+      description: >-
+        For valid response try integer IDs with value >= 1 and <= 10.\ \ Other
+        values will generated exceptions
+      x-openapi-router-controller: words_backend.controllers.store_controller
+      operationId: getOrderById
+      parameters:
+        - name: orderId
+          in: path
+          description: ID of word that needs to be fetched
+          required: true
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+            maximum: 10
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Order not found
+    delete:
+      tags:
+        - store
+      summary: Delete purchase order by ID
+      description: >-
+        For valid response try integer IDs with positive integer value.\ \
+        Negative or non-integer values will generate API errors
+      x-openapi-router-controller: words_backend.controllers.store_controller
+      operationId: deleteOrder
+      parameters:
+        - name: orderId
+          in: path
+          description: ID of the order that needs to be deleted
+          required: true
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      responses:
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Order not found
+  /user:
+    post:
+      tags:
+        - user
+      summary: Create user
+      description: This can only be done by the logged in user.
+      x-openapi-router-controller: words_backend.controllers.user_controller
+      operationId: createUser
+      responses:
+        default:
+          description: successful operation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+        description: Created user object
+        required: true
+  /user/createWithArray:
+    post:
+      tags:
+        - user
+      summary: Creates list of users with given input array
+      x-openapi-router-controller: words_backend.controllers.user_controller
+      operationId: createUsersWithArrayInput
+      responses:
+        default:
+          description: successful operation
+      requestBody:
+        $ref: '#/components/requestBodies/UserArray'
+  /user/createWithList:
+    post:
+      tags:
+        - user
+      summary: Creates list of users with given input array
+      x-openapi-router-controller: words_backend.controllers.user_controller
+      operationId: createUsersWithListInput
+      responses:
+        default:
+          description: successful operation
+      requestBody:
+        $ref: '#/components/requestBodies/UserArray'
+  /user/login:
+    get:
+      tags:
+        - user
+      summary: Logs user into the system
+      x-openapi-router-controller: words_backend.controllers.user_controller
+      operationId: loginUser
+      parameters:
+        - name: username
+          in: query
+          description: The user name for login
+          required: true
+          schema:
+            type: string
+        - name: password
+          in: query
+          description: The password for login in clear text
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          headers:
+            X-Rate-Limit:
+              description: calls per hour allowed by the user
+              schema:
+                type: integer
+                format: int32
+            X-Expires-After:
+              description: date in UTC when token expires
+              schema:
+                type: string
+                format: date-time
+          content:
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+        '400':
+          description: Invalid username/password supplied
+  /user/logout:
+    get:
+      tags:
+        - user
+      summary: Logs out current logged in user session
+      x-openapi-router-controller: words_backend.controllers.user_controller
+      operationId: logoutUser
+      responses:
+        default:
+          description: successful operation
+  '/user/{username}':
+    get:
+      tags:
+        - user
+      summary: Get user by user name
+      x-openapi-router-controller: words_backend.controllers.user_controller
+      operationId: getUserByName
+      parameters:
+        - name: username
+          in: path
+          description: The name that needs to be fetched. Use user1 for testing.
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid username supplied
+        '404':
+          description: User not found
+    put:
+      tags:
+        - user
+      summary: Update user
+      description: This can only be done by the logged in user.
+      x-openapi-router-controller: words_backend.controllers.user_controller
+      operationId: updateUser
+      parameters:
+        - name: username
+          in: path
+          description: name that need to be updated
+          required: true
+          schema:
+            type: string
+      responses:
+        '400':
+          description: Invalid user supplied
+        '404':
+          description: User not found
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+        description: Updated user object
+        required: true
+    delete:
+      tags:
+        - user
+      summary: Delete user
+      description: This can only be done by the logged in user.
+      x-openapi-router-controller: words_backend.controllers.user_controller
+      operationId: deleteUser
+      parameters:
+        - name: username
+          in: path
+          description: The name that needs to be deleted
+          required: true
+          schema:
+            type: string
+      responses:
+        '400':
+          description: Invalid username supplied
+        '404':
+          description: User not found
+components:
+  schemas:
+    Order:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        wordId:
+          type: integer
+          format: int64
+        quantity:
+          type: integer
+          format: int32
+        shipDate:
+          type: string
+          format: date-time
+        status:
+          type: string
+          description: Order Status
+          enum:
+            - placed
+            - approved
+            - delivered
+        complete:
+          type: boolean
+          default: false
+      xml:
+        name: Order
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        username:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        phone:
+          type: string
+        userStatus:
+          type: integer
+          format: int32
+          description: User Status
+      xml:
+        name: User
+    Word:
+      type: object
+      required:
+        - name
+        - imageurl
+      properties:
+        id:
+          type: string
+          example: AjW1TOyy9NMDhKFFdLtT
+        name:
+          type: string
+          example: cow
+        imageurl:
+          type: string
+          example: cow.jpg
+      xml:
+        name: Word
+    Words:
+      type: array
+      items:
+        $ref: '#/components/schemas/Word'
+      xml:
+        name: Words
+    ApiResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        type:
+          type: string
+        message:
+          type: string
+  requestBodies:
+    Word:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Word'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/Word'
+      description: Word object that needs to be added to the store
+      required: true
+    UserArray:
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/User'
+      description: List of user object
+      required: true
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
+    wordstore_auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: 'http://wordstore.swagger.io/oauth/dialog'
+          scopes:
+            'write:words': modify words in your account
+            'read:words': read your words
+    api_key:
+      type: apiKey
+      name: api_key
+      in: header
