@@ -285,7 +285,7 @@ paths:
         #- wordstore_auth:
             #- 'write:words'
             #- 'read:words'
-  /words/findByName:
+  /words/findByName/{term}:
     get:
       tags:
         - words
@@ -309,12 +309,12 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Words'
+                  $ref: '#/components/schemas/Word'
             application/xml:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Words'
+                  $ref: '#/components/schemas/Word'
         '400':
           description: Invalid status value
       #security:
