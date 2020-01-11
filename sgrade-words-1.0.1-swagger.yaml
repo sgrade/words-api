@@ -40,7 +40,10 @@ paths:
             - 'write:words'
             - 'read:words'
       requestBody:
-        $ref: '#/components/requestBodies/Word'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Word'
     put:
       tags:
         - word
@@ -59,7 +62,10 @@ paths:
             #- 'write:words'
             #- 'read:words'
       requestBody:
-        $ref: '#/components/requestBodies/Word'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Word'
   '/word/{wordId}':
     get:
       tags:
