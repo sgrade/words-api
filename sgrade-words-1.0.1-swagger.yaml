@@ -35,14 +35,15 @@ paths:
       responses:
         '405':
           description: Invalid input
-      security:
-        - wordstore_auth:
-            - 'write:words'
-            - 'read:words'
+      # security:
+        # - wordstore_auth:
+            # - 'write:words'
+            # - 'read:words'
       requestBody:
         content:
           application/json:
             schema:
+              # Only name and imageurl are required; ID is ignored
               $ref: '#/components/schemas/Word'
     put:
       tags:
@@ -682,10 +683,10 @@ components:
           example: AjW1TOyy9NMDhKFFdLtT
         name:
           type: string
-          example: cow
+          example: doggie
         imageurl:
           type: string
-          example: cow.jpg
+          example: doggie.jpg
       xml:
         name: Word
     Words:
